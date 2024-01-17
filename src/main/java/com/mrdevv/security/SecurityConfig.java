@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -50,20 +50,10 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .addFilter(jwtAuthenticationFilter)
-                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-//    @Bean
-//    UserDetailsService userDetailsService(){
-//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//        manager.createUser(User.withUsername("santiago")
-//                .password("1234")
-//                .roles()
-//                .build());
-//
-//        return manager;
-//    }
 
     @Bean
     PasswordEncoder passwordEncoder(){
